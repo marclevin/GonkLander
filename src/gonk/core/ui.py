@@ -27,11 +27,17 @@ def check_line(check: Check) -> str:
     return line
 
 
+def say(console: Console, text: str) -> None:
+    """Print without folding at the terminal width. Messages often contain
+    paths and commands, and a wrapped path cannot be copied or clicked."""
+    console.print(text, soft_wrap=True)
+
+
 def print_checks(checks: Iterable[Check], console: Console = out, *, hints: bool = True) -> None:
     for check in checks:
-        console.print(check_line(check))
+        say(console, check_line(check))
         if hints and check.hint and check.status in ("warn", "fail"):
-            console.print(f"      [dim]→[/dim] {escape(check.hint)}")
+            say(console, f"      [dim]→[/dim] {escape(check.hint)}")
 
 
 def heading(text: str, console: Console = out) -> None:
@@ -39,11 +45,11 @@ def heading(text: str, console: Console = out) -> None:
 
 
 def print_error(error: GonkError) -> None:
-    err.print(f"[bold red]{escape(error.message)}[/bold red]")
+    say(err, f"[bold red]{escape(error.message)}[/bold red]")
     if error.checks:
         err.print()
         print_checks(error.checks, err, hints=False)
     if error.hints:
         err.print("\nTry:")
         for hint in error.hints:
-            err.print(f"    {escape(hint)}")
+            say(err, f"    {escape(hint)}")

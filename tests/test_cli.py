@@ -237,7 +237,7 @@ def test_a_broken_config_stops_commands_but_not_the_doctor(
     (tmp_path / "config" / "config.yaml").write_text("home:\n  ssh_port: nope\n")
     code, output = run("land", "--dry-run")
     assert code == 1
-    assert "config.yaml" in output
+    assert str(tmp_path / "config" / "config.yaml") in output  # whole, on one line
     assert "whole number" in output
 
     code, output = run("doctor")
@@ -354,6 +354,13 @@ def test_mcp_list_explains_policy(machine: FakeSystem) -> None:
 
     run("config", "set", "policy.allow", "files.read")
     assert "gonk_files_read" in run("mcp", "list")[1]
+
+
+def test_long_paths_in_errors_are_never_folded(machine: FakeSystem, tmp_path: Path) -> None:
+    machine._home = tmp_path / ("very-" * 30 + "long")
+    machine.env["GONK_CONFIG_DIR"] = str(machine._home / ".config" / "gonk")
+    _code, output = run("config", "set", "home.ssh_port", "nope")
+    assert "\n" not in output.strip()
 
 
 def test_tables_fit_a_narrow_terminal(machine: FakeSystem) -> None:
