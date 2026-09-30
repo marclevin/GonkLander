@@ -11,6 +11,7 @@ import os
 import shutil
 import socket
 import subprocess
+import sys
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -129,6 +130,12 @@ class System:
         executable = self.which(argv[0])
         if executable is None:
             raise FileNotFoundError(argv[0])
+        if sys.platform == "win32":
+            # Windows has no exec. os.execv there starts a child and exits the
+            # parent, so the shell shows its prompt while ssh is still running
+            # and the two fight over the keyboard. Wait for ssh instead.
+            code = subprocess.run([executable, *argv[1:]], env=self._environment(None), check=False)
+            raise SystemExit(code.returncode)
         os.execv(executable, list(argv))  # noqa: S606 - argv list, no shell
 
     # --- network ---------------------------------------------------------
