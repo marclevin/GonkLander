@@ -156,7 +156,7 @@ def test_shell_command(config: Config) -> None:
     argv = ssh.shell_command(config, "100.64.0.7")
     assert argv[:3] == ["ssh", "-t", "marc@100.64.0.7"]
     assert "tmux -u new-session -A -s gonk" in argv[3]
-    assert 'export LANG=C.UTF-8' in argv[3]  # Windows ssh sends no locale
+    assert "export LANG=C.UTF-8" in argv[3]  # Windows ssh sends no locale
     assert ssh.shell_command(config, "h", tmux=False) == ["ssh", "-t", "marc@h"]
 
 
