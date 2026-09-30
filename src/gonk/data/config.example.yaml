@@ -14,7 +14,7 @@ home:
   user: ""                # remote user; empty means "let ssh decide"
   ssh_port: 22
   agent_port: 4665
-  tmux_session: gonk      # `gonk home shell` attaches to this session
+  tmux_session: gonk      # `gonk home shell --tmux` attaches to this session
   code_path: ""           # folder `gonk home code` opens, e.g. /home/marc/Code
 
 lander:

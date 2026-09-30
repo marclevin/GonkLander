@@ -63,16 +63,20 @@ def status() -> None:
 
 @app.command()
 def shell(
-    no_tmux: Annotated[
-        bool, typer.Option("--no-tmux", help="A plain login shell, without tmux.")
+    tmux: Annotated[
+        bool,
+        typer.Option(
+            "--tmux",
+            help="Attach to a tmux session on home that survives a dropped connection.",
+        ),
     ] = False,
 ) -> None:
-    """Open a shell on home. Reattaches to the same tmux session each time."""
+    """Open a shell on home."""
     system, config = common.load()
     if system.which("ssh") is None:
         raise GonkError("ssh is not installed here.", hints=["gonk tools install ssh"])
     address = reachable_address(config, system)
-    argv = ssh.shell_command(config, address, tmux=not no_tmux)
+    argv = ssh.shell_command(config, address, tmux=tmux)
     common.audit(config).record_quietly("home.shell", host=address)
     system.replace_process(argv)
 

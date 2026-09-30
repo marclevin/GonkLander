@@ -289,8 +289,11 @@ def test_home_shell_becomes_ssh(machine: FakeSystem) -> None:
     run("config", "set", "home.user", "marc")
     machine.open_ports = {("gonksystem", 22)}
     with pytest.raises(Replaced) as replaced:
-        run("home", "shell", "--no-tmux")
+        run("home", "shell")
     assert replaced.value.argv == ["ssh", "-t", "marc@gonksystem"]
+    with pytest.raises(Replaced) as replaced:
+        run("home", "shell", "--tmux")
+    assert "tmux" in replaced.value.argv[-1]
 
 
 def test_home_shell_does_not_try_when_home_is_unreachable(machine: FakeSystem) -> None:

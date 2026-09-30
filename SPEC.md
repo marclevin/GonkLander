@@ -252,8 +252,9 @@ Everything above the transport uses plain OpenSSH:
 - `gonk home status` — runs the transport checks, then an SSH port probe, then
   an authenticated call to the agent. Each step is reported separately so the
   first failing layer is obvious.
-- `gonk home shell` — `ssh -t <home>`, attaching to a persistent tmux session
-  when tmux exists on the far side.
+- `gonk home shell` — `ssh -t <home>`, a plain login shell. `--tmux` attaches
+  to a persistent tmux session instead; it is opt-in because tmux over
+  Windows' ssh client garbles the terminal.
 - `gonk home code` — opens VS Code Remote-SSH against home; falls back to
   explaining what is missing.
 - `gonk home pair` — stores a device token for the agent.

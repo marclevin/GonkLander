@@ -153,16 +153,16 @@ def test_reachable_without_a_token_is_still_reachable(config: Config) -> None:
 
 def test_shell_command(config: Config) -> None:
     config.home.user = "marc"
-    argv = ssh.shell_command(config, "100.64.0.7")
-    assert argv[:3] == ["ssh", "-t", "marc@100.64.0.7"]
+    assert ssh.shell_command(config, "100.64.0.7") == ["ssh", "-t", "marc@100.64.0.7"]
+    argv = ssh.shell_command(config, "h", tmux=True)
+    assert argv[:3] == ["ssh", "-t", "marc@h"]
     assert "tmux -u new-session -A -s gonk" in argv[3]
     assert "export LANG=C.UTF-8" in argv[3]  # Windows ssh sends no locale
-    assert ssh.shell_command(config, "h", tmux=False) == ["ssh", "-t", "marc@h"]
 
 
 def test_shell_command_with_a_port_and_no_user(config: Config) -> None:
     config.home.ssh_port = 2222
-    assert ssh.shell_command(config, "h", tmux=False) == ["ssh", "-t", "-p", "2222", "h"]
+    assert ssh.shell_command(config, "h") == ["ssh", "-t", "-p", "2222", "h"]
 
 
 def test_code_command(config: Config) -> None:
@@ -194,7 +194,7 @@ def test_settings_that_could_become_options_or_commands_are_refused(
 ) -> None:
     setattr(config.home, setting, value)
     with pytest.raises(GonkError):
-        ssh.shell_command(config, "gonksystem")
+        ssh.shell_command(config, "gonksystem", tmux=True)
 
 
 def test_code_path_cannot_be_an_option(config: Config) -> None:

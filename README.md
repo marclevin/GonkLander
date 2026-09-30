@@ -57,7 +57,7 @@ On the machine you are borrowing:
 gonk config set home.host gonksystem
 gonk config set home.user marc
 gonk home status         # checks each layer and says which one is broken
-gonk home shell          # ssh + tmux on gonksystem
+gonk home shell          # ssh to gonksystem (--tmux for a session that survives disconnects)
 gonk home code           # VS Code Remote-SSH against gonksystem
 ```
 

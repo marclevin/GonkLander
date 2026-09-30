@@ -34,8 +34,9 @@ def target(config: Config, address: str) -> str:
     return f"{config.home.user}@{address}" if config.home.user else address
 
 
-def shell_command(config: Config, address: str, *, tmux: bool = True) -> list[str]:
-    """ssh into home; attach to a persistent tmux session if home has tmux."""
+def shell_command(config: Config, address: str, *, tmux: bool = False) -> list[str]:
+    """ssh into home. With tmux=True, attach to a persistent tmux session instead
+    of a plain login shell."""
     validate(config)
     argv = ["ssh", "-t"]
     if config.home.ssh_port != 22:
