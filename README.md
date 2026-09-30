@@ -1,6 +1,6 @@
 # GonkLander
 
-> Land on an unfamiliar machine, run one command, and make it Marc-compatible.
+> Land on an unfamiliar machine, run one command, and make it Gonk-compatible.
 
 GonkLander is a small personal infrastructure project. The command is `gonk`.
 
