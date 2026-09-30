@@ -1,0 +1,16 @@
+name: dev
+description: Everyday development tools
+extends: minimal
+tools:
+  - gh
+  - python
+  - uv
+  - node
+  - npm
+  - pnpm
+  - fzf
+  - fd
+  - bat
+  - htop
+  - tree
+  - unzip

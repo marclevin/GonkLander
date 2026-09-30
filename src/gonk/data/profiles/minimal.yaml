@@ -1,0 +1,9 @@
+name: minimal
+description: The bare essentials for a borrowed machine
+tools:
+  - git
+  - curl
+  - ssh
+  - jq
+  - ripgrep
+  - tmux

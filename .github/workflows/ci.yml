@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint, types, tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install
+        run: uv sync --locked --python ${{ matrix.python }}
+      - name: Format
+        run: uv run ruff format --check .
+      - name: Lint
+        run: uv run ruff check .
+      - name: Types
+        run: uv run mypy
+      - name: Tests
+        run: uv run pytest
+
+  scripts:
+    name: Bootstrap scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: shellcheck lander/install.sh lander/shim/gonk scripts/*.sh
+      - name: PowerShell scripts parse
+        shell: pwsh
+        run: |
+          $failed = $false
+          foreach ($path in "lander/install.ps1", "lander/shim/gonk.ps1") {
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              (Resolve-Path $path), [ref]$null, [ref]$errors) | Out-Null
+            if ($errors) { $errors | ForEach-Object { Write-Host "${path}: $_" }; $failed = $true }
+          }
+          if ($failed) { exit 1 }
+
+  install:
+    name: Install on a clean machine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the installer twice
+        run: |
+          ./lander/install.sh
+          ./lander/install.sh
+      - name: The first-milestone commands work
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          gonk --version
+          gonk doctor || true    # a CI runner has no home machine to reach
+          gonk land minimal --dry-run
+          gonk tools list
+          gonk status
+          gonk mcp list

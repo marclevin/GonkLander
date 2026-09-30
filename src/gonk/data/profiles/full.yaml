@@ -1,0 +1,6 @@
+name: full
+description: Everything, including containers and private networking
+extends: ai
+tools:
+  - docker
+  - tailscale

@@ -1,0 +1,6 @@
+name: ai
+description: dev, plus AI coding agents
+extends: dev
+tools:
+  - claude-code
+  - codex

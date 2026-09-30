@@ -1,0 +1,54 @@
+# Gonk configuration.
+#
+# Every value here is the default, so you only need the lines you change.
+# Any setting can also be given as an environment variable:
+#     home.host  ->  GONK_HOME_HOST
+#
+# No secrets belong in this file. Tokens live in credentials.yaml (mode 0600)
+# or in GONK_HOME_TOKEN.
+
+home:
+  name: gonksystem        # hostname of the home machine
+  transport: tailscale    # tailscale | ssh
+  host: gonksystem        # what to dial: MagicDNS name, IP, or an ssh config alias
+  user: ""                # remote user; empty means "let ssh decide"
+  ssh_port: 22
+  agent_port: 4665
+  tmux_session: gonk      # `gonk home shell` attaches to this session
+  code_path: ""           # folder `gonk home code` opens, e.g. /home/marc/Code
+
+lander:
+  default_profile: dev    # what `gonk land` installs when you do not say
+
+agent:
+  enabled: true
+  bind: 127.0.0.1         # an address, or "tailscale" for this machine's tailnet address
+  port: 4665
+  allow_public_bind: false  # leave this alone; see docs/security.md
+
+mcp:
+  enabled: true
+
+# Safe capabilities are always available. Everything else is opt-in.
+policy:
+  allow: []
+  #  - files.read
+  #  - services.status
+  #  - mphil.*             # wildcards work for sensitive capabilities
+  #  - services.restart    # dangerous ones must be named exactly
+  deny: []
+
+projects:
+  roots: ["~/Code"]       # git repositories directly under these are "projects"
+
+files:
+  roots: []               # files.read only reads under these directories
+  max_bytes: 200000
+
+services:
+  allowed: []             # e.g. ["nginx.service", "user:gonk-agent.service"]
+
+# Named commands for the `commands.run` capability. The caller picks a name
+# and cannot add arguments.
+commands: {}
+#  disk-report: [df, -h]

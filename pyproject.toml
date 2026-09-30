@@ -1,0 +1,63 @@
+[project]
+name = "gonklander"
+version = "0.1.0"
+description = "Land on an unfamiliar machine, run one command, and make it Marc-compatible."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Marc Levin" }]
+dependencies = [
+    "typer>=0.15",
+    "rich>=13.7",
+    "pyyaml>=6.0",
+    "httpx>=0.27",
+    "starlette>=0.40",
+    "uvicorn>=0.30",
+    "mcp>=1.12,<2",
+]
+
+[project.scripts]
+gonk = "gonk.cli.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gonk"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "types-pyyaml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = [
+    # Starlette's test client wants a newer HTTP library; ours works.
+    "ignore:Using `httpx` with `starlette.testclient`",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "S", "SIM", "RUF"]
+ignore = [
+    "S603",   # subprocess without shell: that is exactly what we want, argv lists only
+    "S607",   # partial executable paths: we resolve tools through PATH on purpose
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S105", "S106", "S108"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src/gonk"]
+strict = true
+warn_unused_ignores = true

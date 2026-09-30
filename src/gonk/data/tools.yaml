@@ -1,0 +1,230 @@
+# The tool catalog: what each tool is, how to tell it is there, how to get it.
+#
+#   check.commands     any one of these on PATH means the tool is present
+#   check.version_args how to ask for the version        (default: --version)
+#   check.min_version  older than this counts as "needs upgrade"
+#   requires           tools that must be installed first
+#   install            providers, in order of preference; the first one that
+#                      works on this machine is used
+#   note               shown after a successful install
+#
+# Providers: apt, dnf, pacman, brew, winget, npm, script.
+# Add your own tools in ~/.config/gonk/tools.yaml; same format, same names win.
+
+git:
+  description: Version control
+  check: { commands: [git], min_version: "2.30" }
+  install:
+    apt: { packages: [git] }
+    dnf: { packages: [git] }
+    pacman: { packages: [git] }
+    brew: { packages: [git] }
+    winget: { id: Git.Git }
+
+curl:
+  description: Transfer data with URLs
+  check: { commands: [curl] }
+  install:
+    apt: { packages: [curl, ca-certificates] }
+    dnf: { packages: [curl] }
+    pacman: { packages: [curl] }
+    brew: { packages: [curl] }
+
+ssh:
+  description: OpenSSH client
+  check: { commands: [ssh], version_args: ["-V"] }
+  install:
+    apt: { packages: [openssh-client] }
+    dnf: { packages: [openssh-clients] }
+    pacman: { packages: [openssh] }
+    winget: { id: Microsoft.OpenSSH.Preview }
+
+jq:
+  description: Command-line JSON processor
+  check: { commands: [jq], min_version: "1.6" }
+  install:
+    apt: { packages: [jq] }
+    dnf: { packages: [jq] }
+    pacman: { packages: [jq] }
+    brew: { packages: [jq] }
+    winget: { id: jqlang.jq }
+
+ripgrep:
+  description: Fast recursive search (rg)
+  check: { commands: [rg] }
+  install:
+    apt: { packages: [ripgrep] }
+    dnf: { packages: [ripgrep] }
+    pacman: { packages: [ripgrep] }
+    brew: { packages: [ripgrep] }
+    winget: { id: BurntSushi.ripgrep.MSVC }
+
+tmux:
+  description: Terminal multiplexer
+  check: { commands: [tmux], version_args: ["-V"] }
+  install:
+    apt: { packages: [tmux] }
+    dnf: { packages: [tmux] }
+    pacman: { packages: [tmux] }
+    brew: { packages: [tmux] }
+
+gh:
+  description: GitHub CLI
+  check: { commands: [gh], min_version: "2.0" }
+  install:
+    apt: { packages: [gh] }
+    dnf: { packages: [gh] }
+    pacman: { packages: [github-cli] }
+    brew: { packages: [gh] }
+    winget: { id: GitHub.cli }
+  note: "Sign in with: gh auth login"
+
+python:
+  description: Python 3
+  check: { commands: [python3, python], min_version: "3.10" }
+  install:
+    apt: { packages: [python3, python3-venv] }
+    dnf: { packages: [python3] }
+    pacman: { packages: [python] }
+    brew: { packages: [python] }
+    winget: { id: Python.Python.3.13 }
+
+uv:
+  description: Python package and project manager
+  check: { commands: [uv] }
+  requires: [curl]
+  install:
+    brew: { packages: [uv] }
+    winget: { id: astral-sh.uv }
+    script:
+      url: https://astral.sh/uv/install.sh
+      shell: sh
+      env: { UV_NO_MODIFY_PATH: "1" }
+
+node:
+  description: Node.js
+  check: { commands: [node], min_version: "18" }
+  install:
+    apt: { packages: [nodejs] }
+    dnf: { packages: [nodejs] }
+    pacman: { packages: [nodejs] }
+    brew: { packages: [node] }
+    winget: { id: OpenJS.NodeJS.LTS }
+
+npm:
+  description: Node package manager
+  check: { commands: [npm] }
+  requires: [node]
+  install:
+    apt: { packages: [npm] }
+    dnf: { packages: [nodejs-npm] }
+    pacman: { packages: [npm] }
+    brew: { packages: [node] }
+    winget: { id: OpenJS.NodeJS.LTS }
+
+pnpm:
+  description: Fast, disk-efficient Node package manager
+  check: { commands: [pnpm] }
+  requires: [npm]
+  install:
+    brew: { packages: [pnpm] }
+    winget: { id: pnpm.pnpm }
+    npm: { package: pnpm }
+
+fzf:
+  description: Fuzzy finder
+  check: { commands: [fzf] }
+  install:
+    apt: { packages: [fzf] }
+    dnf: { packages: [fzf] }
+    pacman: { packages: [fzf] }
+    brew: { packages: [fzf] }
+    winget: { id: junegunn.fzf }
+
+fd:
+  description: Friendlier find
+  check: { commands: [fd, fdfind] }
+  install:
+    apt: { packages: [fd-find] }
+    dnf: { packages: [fd-find] }
+    pacman: { packages: [fd] }
+    brew: { packages: [fd] }
+    winget: { id: sharkdp.fd }
+
+bat:
+  description: cat with syntax highlighting
+  check: { commands: [bat, batcat] }
+  install:
+    apt: { packages: [bat] }
+    dnf: { packages: [bat] }
+    pacman: { packages: [bat] }
+    brew: { packages: [bat] }
+    winget: { id: sharkdp.bat }
+
+htop:
+  description: Interactive process viewer
+  check: { commands: [htop] }
+  install:
+    apt: { packages: [htop] }
+    dnf: { packages: [htop] }
+    pacman: { packages: [htop] }
+    brew: { packages: [htop] }
+
+tree:
+  description: Directory listing as a tree
+  check: { commands: [tree] }
+  install:
+    apt: { packages: [tree] }
+    dnf: { packages: [tree] }
+    pacman: { packages: [tree] }
+    brew: { packages: [tree] }
+
+unzip:
+  description: Extract zip archives
+  check: { commands: [unzip], version_args: ["-v"] }
+  install:
+    apt: { packages: [unzip] }
+    dnf: { packages: [unzip] }
+    pacman: { packages: [unzip] }
+
+claude-code:
+  description: Claude Code
+  check: { commands: [claude] }
+  requires: [curl]
+  install:
+    winget: { id: Anthropic.ClaudeCode }
+    script:
+      url: https://claude.ai/install.sh
+      shell: bash
+  note: "Sign in by running: claude"
+
+codex:
+  description: OpenAI Codex CLI
+  check: { commands: [codex] }
+  requires: [npm]
+  install:
+    npm: { package: "@openai/codex" }
+  note: "Sign in by running: codex"
+
+docker:
+  description: Container runtime
+  check: { commands: [docker] }
+  install:
+    apt: { packages: [docker.io] }
+    dnf: { packages: [moby-engine] }
+    pacman: { packages: [docker] }
+    brew: { packages: [docker], cask: true }
+    winget: { id: Docker.DockerDesktop }
+  note: "To use docker without sudo: sudo usermod -aG docker $USER, then log out and back in"
+
+tailscale:
+  description: Private mesh network
+  check: { commands: [tailscale] }
+  requires: [curl]
+  install:
+    brew: { packages: [tailscale] }
+    winget: { id: Tailscale.Tailscale }
+    script:
+      url: https://tailscale.com/install.sh
+      shell: sh
+  note: "Join your tailnet with: sudo tailscale up"
