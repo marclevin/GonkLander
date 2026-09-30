@@ -82,8 +82,8 @@ documentation describes and have never been executed.
 ## Milestone 4 — Quality
 
 - [x] Tests: 377, about 2 seconds, none touch the real machine or the network
-- [x] GitHub Actions CI — written; **has not run yet**, since the repository
-      has not been pushed
+- [x] GitHub Actions CI — green on the first push, including a job that
+      runs the installer twice on a clean Ubuntu runner
 - [x] `docs/security.md`
 - [x] `docs/website.md`
 - [x] `docs/plugins.md`
@@ -112,29 +112,18 @@ documentation describes and have never been executed.
 Nothing below could be done without your credentials, your machines, or a
 decision that is yours.
 
-1. **Commit.** The repository is initialised on `main` with nothing
-   committed. Review, then:
+1. ~~Commit and publish.~~ Done: https://github.com/marclevin/GonkLander,
+   public, CI green. Installing straight from GitHub was verified:
 
    ```bash
-   cd ~/Code/GonkLander
-   git add -A && git commit -m "GonkLander 0.1.0"
+   curl -fsSL https://raw.githubusercontent.com/marclevin/GonkLander/main/lander/install.sh | bash
    ```
 
-2. **Choose a licence.** None has been added. The repository has to be
-   public for the installer to work, so this matters.
+2. **Choose a licence.** None has been added, and the repository is public.
 
-3. **Publish**, which makes the install URLs real and starts CI:
+3. **Put the shims on marclevin.me.** Two files; see `docs/website.md`.
 
-   ```bash
-   gh repo create marclevin/GonkLander --public --source . --push
-   ```
-
-   Until this is done, only `./lander/install.sh` from a checkout works;
-   the `curl … | bash` forms have nothing to download.
-
-4. **Put the shims on marclevin.me.** Two files; see `docs/website.md`.
-
-5. **Install on gonksystem and land for real.** This is the first time
+4. **Install on gonksystem and land for real.** This is the first time
    `gonk land` will actually install anything:
 
    ```bash
@@ -142,7 +131,7 @@ decision that is yours.
    gonk land dev
    ```
 
-6. **Set up the network.** Tailscale is not installed on `gonksystem`, and
+5. **Set up the network.** Tailscale is not installed on `gonksystem`, and
    neither is an SSH server:
 
    ```bash
@@ -150,7 +139,7 @@ decision that is yours.
    sudo apt-get install -y openssh-server
    ```
 
-7. **Start the agent on gonksystem:**
+6. **Start the agent on gonksystem:**
 
    ```bash
    gonk config set agent.bind tailscale
@@ -159,10 +148,10 @@ decision that is yours.
    sudo loginctl enable-linger $USER     # keeps it running when you log out
    ```
 
-8. **Try it from a second machine.** This is the real test of Milestone 2.
+7. **Try it from a second machine.** This is the real test of Milestone 2.
    Please report what `gonk home status` prints if anything fails.
 
-9. **Try the Windows installer**, if you care about Windows.
+8. **Try the Windows installer**, if you care about Windows.
 
 ## Later
 
