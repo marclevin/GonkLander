@@ -44,7 +44,11 @@ def shell_command(config: Config, address: str, *, tmux: bool = True) -> list[st
     if tmux:
         session = config.home.tmux_session  # validated above: safe to place in a command
         argv.append(
-            f"command -v tmux >/dev/null 2>&1 && exec tmux new-session -A -s {session}; "
+            # Windows' ssh does not send LANG, and a shell without one leaves
+            # tmux in a mode that mangles every non-ASCII character. -u forces
+            # UTF-8 as well, for a tmux server that was started before the fix.
+            '[ -n "$LANG" ] || export LANG=C.UTF-8; '
+            f"command -v tmux >/dev/null 2>&1 && exec tmux -u new-session -A -s {session}; "
             'exec "${SHELL:-/bin/sh}" -l'
         )
     return argv
